@@ -1,5 +1,6 @@
 package com.example.ValidDemoWebsite.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,12 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+
+@Entity
+@Table(name = "Products")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotBlank(message = "Tên sản phẩm không được để trống")
@@ -28,6 +34,8 @@ public class Product {
     @Max(value = 9999999, message = "Giá sản phẩm không được lớn hơn 9999999")
     private Long price;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 }
 

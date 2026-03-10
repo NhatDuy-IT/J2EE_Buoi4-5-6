@@ -1,6 +1,8 @@
 package com.example.ValidDemoWebsite.service;
 
 import com.example.ValidDemoWebsite.model.Product;
+import com.example.ValidDemoWebsite.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,47 +11,35 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductService {
-    List<Product> listProduct = new ArrayList<>();
+
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<Product> getAll() {
-        return listProduct;
+        return productRepository.findAll();
     }
 
     public Product get(int id) {
-        return listProduct.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Optional<Product> product = productRepository.findById(id);
+        return product.orElse(null);
     }
 
     public void add(Product newProduct) {
-        int maxId = listProduct.stream()
-                .mapToInt(Product::getId)
-                .max()
-                .orElse(0);
-        newProduct.setId(maxId + 1);
-        listProduct.add(newProduct);
+        productRepository.save(newProduct);
     }
 
     public void update(Product editProduct) {
-        Product find = get(editProduct.getId());
-        if (find != null) {
-            if (editProduct.getPrice() != null)
-                find.setPrice(editProduct.getPrice());
-            find.setName(editProduct.getName());
-            if (editProduct.getImage() != null)
-                find.setImage(editProduct.getImage());
-        }
+        productRepository.save(editProduct);
     }
 
     public void delete(int id) {
-        listProduct.removeIf(p -> p.getId() == id);
+        productRepository.deleteById(id);
     }
 
     public void updateImage(Product newProduct, MultipartFile imageProduct) {

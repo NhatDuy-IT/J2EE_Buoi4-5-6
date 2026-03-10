@@ -1,30 +1,34 @@
 package com.example.ValidDemoWebsite.service;
 
 import com.example.ValidDemoWebsite.model.Category;
+import com.example.ValidDemoWebsite.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
-    List<Category> listCategory = new ArrayList<>();
 
-    public CategoryService() {
-        listCategory.add(new Category(1, "Điện thoại"));
-        listCategory.add(new Category(2, "Laptop"));
-        listCategory.add(new Category(3, "Máy tính bảng"));
-    }
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public List<Category> getAll() {
-        return listCategory;
+        return categoryRepository.findAll();
     }
 
     public Category get(int id) {
-        return listCategory.stream()
-                .filter(c -> c.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Optional<Category> category = categoryRepository.findById(id);
+        return category.orElse(null);
+    }
+
+    public void add(Category category) {
+        categoryRepository.save(category);
+    }
+
+    public void delete(int id) {
+        categoryRepository.deleteById(id);
     }
 }
 

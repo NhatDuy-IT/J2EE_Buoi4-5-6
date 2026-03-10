@@ -1,0 +1,27 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Them danh muc</title>
+</head>
+<body>
+<div layout:fragment="content" class="container body-content">
+    <h2 class="mt-3">Them danh muc moi</h2>
+    <form th:action="@{/categories/create}" th:object="${category}" method="post" class="form">
+        <div class="form-group mb-3">
+            <label for="name">Ten danh muc:</label>
+            <input class="form-control" type="text" th:field="*{name}"
+                   id="name" placeholder="Nhap ten danh muc">
+            <div class="alert alert-warning mt-1"
+                 th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+        <input type="submit" class="btn btn-success" value="Luu">
+        <a th:href="@{/categories}" class="btn btn-secondary">Huy</a>
+    </form>
+</div>
+</body>
+</html>
+

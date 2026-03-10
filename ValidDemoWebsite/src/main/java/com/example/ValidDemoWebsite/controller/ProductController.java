@@ -42,7 +42,7 @@ public class ProductController {
     @PostMapping("/products/create")
     public String Create(@Valid Product newProduct,
                          BindingResult result,
-                         @RequestParam("category.id") int categoryId,
+                         @RequestParam(name = "categoryId", required = false) Integer categoryId,
                          @RequestParam("imageProduct") MultipartFile imageProduct,
                          Model model) {
         if (result.hasErrors()) {
@@ -50,9 +50,11 @@ public class ProductController {
             model.addAttribute("categories", categoryService.getAll());
             return "product/create";
         }
-        productService.updateImage(newProduct, imageProduct); // Xử lý ảnh
-        Category selectedCategory = categoryService.get(categoryId);
-        newProduct.setCategory(selectedCategory);
+        productService.updateImage(newProduct, imageProduct);
+        if (categoryId != null && categoryId > 0) {
+            Category selectedCategory = categoryService.get(categoryId);
+            newProduct.setCategory(selectedCategory);
+        }
         productService.add(newProduct);
         return "redirect:/products";
     }
@@ -77,6 +79,7 @@ public class ProductController {
     @PostMapping("/products/edit")
     public String Edit(@Valid Product editProduct,
                        BindingResult result,
+                       @RequestParam(name = "categoryId", required = false) Integer categoryId,
                        @RequestParam("imageProduct") MultipartFile imageProduct,
                        Model model) {
         if (result.hasErrors()) {
@@ -84,10 +87,16 @@ public class ProductController {
             model.addAttribute("categories", categoryService.getAll());
             return "product/edit";
         }
-        if (imageProduct != null && !imageProduct.isEmpty()) {
-            productService.updateImage(editProduct, imageProduct); // Cập nhật ảnh nếu có
+        if (categoryId != null && categoryId > 0) {
+            Category selectedCategory = categoryService.get(categoryId);
+            editProduct.setCategory(selectedCategory);
+        } else {
+            editProduct.setCategory(null);
         }
-        productService.update(editProduct); // Cập nhật sản phẩm
+        if (imageProduct != null && !imageProduct.isEmpty()) {
+            productService.updateImage(editProduct, imageProduct);
+        }
+        productService.update(editProduct);
         return "redirect:/products";
     }
 }
