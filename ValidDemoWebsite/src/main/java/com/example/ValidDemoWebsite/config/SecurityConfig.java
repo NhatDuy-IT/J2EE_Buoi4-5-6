@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/home", true)
+                        // Sau khi login thành công, chuyển tới trang chính của ứng dụng
+                        .defaultSuccessUrl("/products", true)
                 )
                 .logout(logout -> logout.permitAll());
 
